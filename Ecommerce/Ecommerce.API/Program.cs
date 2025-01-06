@@ -1,5 +1,7 @@
 using Ecommerce.Repositorio.DBContext;
 using Microsoft.EntityFrameworkCore;
+using Ecommerce.Repositorio.Contrato;
+using Ecommerce.Repositorio.Implementacion;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,6 +17,10 @@ builder.Services.AddDbContext<DbecommerceContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("CadenaSQL"));
 });
+
+//Servicios
+builder.Services.AddTransient(typeof(IGenericoRepositorio<>), typeof(GenericoRepositorio<>));//No se sabe que modelos se van a trabajar
+builder.Services.AddScoped<IVentaRepositorio, VentaRepositorio>();//Aqui si sabemos que modelos se van a trabajar
 
 var app = builder.Build();
 
