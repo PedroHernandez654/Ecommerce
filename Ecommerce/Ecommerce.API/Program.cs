@@ -2,6 +2,7 @@ using Ecommerce.Repositorio.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Ecommerce.Repositorio.Contrato;
 using Ecommerce.Repositorio.Implementacion;
+using Ecommerce.Utilidades;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,6 +22,9 @@ builder.Services.AddDbContext<DbecommerceContext>(options =>
 //Servicios
 builder.Services.AddTransient(typeof(IGenericoRepositorio<>), typeof(GenericoRepositorio<>));//No se sabe que modelos se van a trabajar
 builder.Services.AddScoped<IVentaRepositorio, VentaRepositorio>();//Aqui si sabemos que modelos se van a trabajar
+
+//Agregar AutoMapper
+builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
 var app = builder.Build();
 
