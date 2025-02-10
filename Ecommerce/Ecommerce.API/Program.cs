@@ -32,6 +32,14 @@ builder.Services.AddScoped<IProductoServicio,ProductoServicio>();
 builder.Services.AddScoped<IVentaServicio,VentaServicio>();
 builder.Services.AddScoped<IDashboardServicio,DashboardServicio>();
 
+//CORS
+builder.Services.AddCors(options => {
+    options.AddPolicy("NuevaPolitica", app =>
+    {
+        app.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
 //Agregar AutoMapper
 builder.Services.AddAutoMapper(typeof(AutoMapperProfile));
 
@@ -43,6 +51,9 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+//Uso de los CORS
+app.UseCors("NuevaPolitica");
 
 app.UseHttpsRedirection();
 
