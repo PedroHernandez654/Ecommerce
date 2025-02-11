@@ -1,8 +1,8 @@
 ﻿using Blazored.LocalStorage;
+using Blazored.Toast.Configuration;
 using Blazored.Toast.Services;
 using Ecommerce.DTO;
 using Ecommerce.WebAssembly.Servicios.Contrato;
-using System.Drawing;
 
 namespace Ecommerce.WebAssembly.Servicios.Implementacion
 {
@@ -41,10 +41,13 @@ namespace Ecommerce.WebAssembly.Servicios.Implementacion
                 carrito.Add(modelo);
                 //Agregamos a nuestro objeto carrito 
                 await _localStorageService.SetItemAsync("carrito", carrito);
+
                 //Validamos para mostrar los toast
-                if(encontrado != null)
+                if (encontrado != null)
                 {
                     _toastService.ShowSuccess("Producto fue actualizado");
+
+
                 }
                 else
                 {

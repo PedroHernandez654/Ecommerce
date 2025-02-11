@@ -1,11 +1,8 @@
 ﻿@using Blazored.Toast.Configuration
 
 @inherits LayoutComponentBase
-<!--De esta manera podemos utilizar los TOAST-->
+<!-- Asegúrate de pasar estos valores -->
 <BlazoredToasts Position="ToastPosition.BottomRight"
                 Timeout="10"
                 ShowProgressBar="true" />
-<NavMenu />
-<div class="container body-content">
-    @Body
-</div>
+@Body
