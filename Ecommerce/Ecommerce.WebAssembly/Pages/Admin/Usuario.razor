@@ -1,8 +1,147 @@
 ﻿@page "/usuario"
 @page "/usuario/{id:int}"
 
-<h3>Usuario</h3>
+@using Ecommerce.DTO;
+@using Ecommerce.WebAssembly.Servicios.Contrato;
+@inject IUsuarioServicio usuarioServicio
+@inject IToastService toastService
+@inject NavigationManager _navServicio
+
+<div class="row justify-content-center mt-3">
+    <p class="col-sm-12 col-md-8 col-xl-10 h4 mt-2">@Titulo</p>
+</div>
+<div class="row justify-content-center mt-3">
+    <div class="col-sm-12 col-md-8 col-xl-10">
+        <EditForm Model="modelo" OnValidSubmit="GuardarCambios">
+            <DataAnnotationsValidator></DataAnnotationsValidator>
+            <ValidationSummary />
+
+            <div class="input-group">
+                <span class="input-group-text bg-light" id="basic-addon3">Nombre</span>
+                <input type="text" class="form-control" @bind-value="modelo.Nombre" />
+            </div>
+            <ValidationMessage For="@(()=> modelo.Nombre)" />
+
+            <div class="input-group mt-3">
+                <span class="input-group-text bg-light" id="basic-addon3">Apellido Paterno</span>
+                <input type="text" class="form-control" @bind-value="modelo.ApellidoPaterno" />
+            </div>
+            <ValidationMessage For="@(()=> modelo.ApellidoPaterno)" />
+
+            <div class="input-group mt-3">
+                <span class="input-group-text bg-light" id="basic-addon3">Apellido Materno </span>
+                <input type="text" class="form-control" @bind-value="modelo.ApellidoMaterno" />
+            </div>
+            <ValidationMessage For="@(()=> modelo.ApellidoMaterno)" />
+
+            <div class="input-group mt-3">
+                <span class="input-group-text bg-light" id="basic-addon3">Correo</span>
+                <input type="text" class="form-control" @bind-value="modelo.Correo" /><br />
+            </div>
+            <ValidationMessage For="@(()=>modelo.Correo)" /> 
+            
+            <div class="input-group mt-3">
+                <span class="input-group-text bg-light" id="basic-addon3">Contraseña</span>
+                <input type="password" class="form-control" @bind-value="modelo.Clave" />
+            </div>
+            <ValidationMessage For="@(()=>modelo.Clave)" />
+
+            <div class="input-group mt-3">
+                <span class="input-group-text bg-light" id="basic-addon3">Confirmar Contraseña</span>
+                <input type="password" class="form-control" @bind-value="modelo.ConfirmarClave">
+            </div>
+            <ValidationMessage For="@(()=>modelo.ConfirmarClave)" />
+
+            <div class="mt-3">
+                <button type="submit" class="btn btn-primary" style="width:130px;">@Boton</button>
+                <a href="/usuarios" class="btn btn-secondary" style="width:130px;">Volver</a>
+            </div>
+        </EditForm>
+    </div>
+
+</div>
+
 
 @code {
+    //Parámetro de entrada en la URL
+    [Parameter] 
+    public int Id { get; set; }
+    private string Titulo = "Nuevo Usuario";
+    private string Boton = "Crear";
+
+    private UsuarioDTO modelo { get; set; } = new UsuarioDTO();
+
+    //Se utuliza para setear los objetos
+    protected override async Task OnParametersSetAsync()
+    {
+        if(Id !=0)
+        {
+            Titulo = "Editar Usuario";
+            Boton = "Actualizar";
+
+            var response = await usuarioServicio.Obtener(Id);
+            if (response.EsCorrecto)
+            {//Siempre casteamos el UsuarioDTO
+                modelo = (UsuarioDTO)response.Resultado!;
+                modelo.ConfirmarClave = modelo.Clave;
+            }
+            else
+            {
+                toastService.ShowWarning(response.Mensaje);
+            }
+        }
+    }
+
+    private async Task GuardarCambios()
+    {
+        if(modelo.Clave != modelo.ConfirmarClave)
+        {
+            toastService.ShowWarning("Las contraseñas no coinciden");
+            return;
+        }
+
+        bool respuesta = true;
+        string mensaje = string.Empty;
+
+        if(Id != 0)
+        {
+            var response = await usuarioServicio.Editar(modelo);
+            if (response.EsCorrecto)
+            {
+                mensaje = "Usuario fue modificado";
+            }
+            else
+            {
+                respuesta = false;
+                mensaje = "No se pudo editar";
+            }
+        }
+        else
+        {
+            modelo.Rol = "Administrador";
+            var response = await usuarioServicio.Crear(modelo);
+            if (response.EsCorrecto)
+            {
+                mensaje = "Usuario creado";
+            }
+            else
+            {
+                respuesta = false;
+                mensaje = "No se pudo crear";
+            }
+        }
+
+        if (respuesta)
+        {
+            toastService.ShowSuccess(mensaje);
+            //Utilizamos el navigate to para que podamos ir a nuestra página de usuarios
+            _navServicio.NavigateTo("/usuarios");
+        }
+        else
+        {
+            toastService.ShowWarning(mensaje);
+        }
+
+    }
 
 }
