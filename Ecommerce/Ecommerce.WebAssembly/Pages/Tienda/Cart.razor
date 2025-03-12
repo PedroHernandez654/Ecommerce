@@ -1,5 +1,10 @@
 ﻿@page "/cart"
 
+@inject ICarritoServicio carritoServicio
+@inject IVentaServicio ventaServicio
+@inject IToastService toastService
+@inject NavigationManager _navServicio
+
 <h3>Cart</h3>
 
 @code {

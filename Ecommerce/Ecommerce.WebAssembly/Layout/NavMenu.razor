@@ -1,4 +1,7 @@
-﻿<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light">
+﻿@inject ICarritoServicio carritoServicio
+@implements IDisposable
+
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-light">
     <div class="container">
         <a class="navbar-brand" runat="server" href="#">Eccomerce Demo</a>
         <button type="button" class="navbar-toggler" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" title="Alternar Navegación" aria-controls="navbarSupportedContent"
@@ -22,7 +25,7 @@
             <a class="btn btn-outline-dark ms-auto ms-md-0 me-3" href="/cart">
                 <i class="bi-cart-fill me-1"></i>
                 Cart
-                <span class="badge bg-dark text-white ms-1 rounded-pill">0</span>
+                <span class="badge bg-dark text-white ms-1 rounded-pill">@MostrarCantidadCarrito()</span>
             </a>
 
             <button class="btn btn-outline-dark ms-auto ms-md-0 me-3" type="button">Salir</button>
@@ -43,4 +46,21 @@
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+    protected override void OnInitialized()
+    {
+        //Esto recarga el componente de NAV Menu
+        carritoServicio.MostrarItems += StateHasChanged;
+    }
+
+    public void Dispose()
+    {
+        carritoServicio.MostrarItems -= StateHasChanged;
+    }
+
+    private int MostrarCantidadCarrito()
+    {
+        return carritoServicio.CantidadProductos();
+    }
+
 }
