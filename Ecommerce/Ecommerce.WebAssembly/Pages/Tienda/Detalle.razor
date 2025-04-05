@@ -17,10 +17,16 @@
                 <h1 class="display-5 fw-bolder">@modelo.Nombre</h1>
                 <div class="fs-5 mb-5">
 
-                    <span class="text-danger text-decoration-line-through">S/. @modelo.Precio</span>
-                    <span>S /.@modelo.PrecioOferta</span>
-
-                    <span>S /.@modelo.Precio</span>
+                    <!-- Product price-->
+                    @if (modelo.PrecioOferta != 0 && modelo.PrecioOferta < modelo.Precio)
+                    {
+                        <span class="text-danger text-decoration-line-through">$@modelo.Precio</span>
+                        <span>$@modelo.PrecioOferta</span>
+                    }
+                    else
+                    {
+                        <span>$@modelo.Precio</span>
+                    }
                 </div>
                 <p class="lead">@modelo.Descripcion</p>
                 <div class="d-flex">
