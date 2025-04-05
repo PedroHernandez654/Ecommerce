@@ -1,6 +1,8 @@
 using Ecommerce.WebAssembly;
 using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
+using Microsoft.AspNetCore.Components.Authorization;
+using Ecommerce.WebAssembly.Extensiones;
 
 //LocalStorage
 using Blazored.LocalStorage;
@@ -11,6 +13,8 @@ using Ecommerce.WebAssembly.Servicios.Contrato;
 using Ecommerce.WebAssembly.Servicios.Implementacion;
 
 using CurrieTechnologies.Razor.SweetAlert2;
+
+//Autentificacion
 
 var builder = WebAssemblyHostBuilder.CreateDefault(args);
 builder.RootComponents.Add<App>("#app");
@@ -34,5 +38,9 @@ builder.Services.AddScoped<IDashboardServicio,DashboardServicio>();
 
 //Implementación de sweet alert
 builder.Services.AddSweetAlert2();
+
+//Autentificacion
+builder.Services.AddAuthorizationCore();
+builder.Services.AddScoped<AuthenticationStateProvider,AutenticacionExtension>();
 
 await builder.Build().RunAsync();
